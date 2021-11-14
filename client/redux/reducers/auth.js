@@ -1,7 +1,8 @@
 const initialState = {
-  token: '',
+  token: '123123test',
   user: {
-    name: ''
+    name: 'LocalUser',
+    id: '321321ff'
   }
 }
 

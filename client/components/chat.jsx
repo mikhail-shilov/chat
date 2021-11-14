@@ -5,9 +5,11 @@ import Head from "./head"
 import Channel from "./ui/channel";
 
 const Chat = () => {
+  const {name: userName, id: userId} = useSelector(state => state.auth.user)
   const messages = useSelector(state => state.channel.channels.general.messages)
   const channels = Object.keys(useSelector(state => state.channel.channels))
    .map((nameOfChannel) => (<><span className="pr-1 text-grey-light">#</span> {nameOfChannel} <br /></>))
+  console.log(userId)
   return (
     <>
       <Head title="chat" />
@@ -25,7 +27,7 @@ const Chat = () => {
             </h1>
             <div className="flex items-center mb-6 px-4">
               <span className="bg-green rounded-full block w-2 h-2 mr-2" />
-              <span className="text-purple-100">Olivia</span>
+              <span className="text-purple-100">{userName}</span>
             </div>
 
             <div className="px-4 mb-2 font-sans">
