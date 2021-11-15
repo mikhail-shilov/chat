@@ -1,11 +1,12 @@
 import React from 'react'
+import { NavLink } from "react-router-dom";
 
 import Head from './head'
 
 const LoginForm = () => {
   return (
     <>
-      <Head title="login page" />
+      <Head title="login" />
       <div className="w-screen h-screen bg-gray-100 flex justify-center items-center">
         <div className=" max-w-xs ">
           <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -30,7 +31,6 @@ const LoginForm = () => {
                 type="password"
                 placeholder="******************"
               />
-              <p className="text-red-500 text-xs italic">Please choose a password.</p>
             </div>
             <div className="flex items-center justify-between">
               <button
@@ -38,7 +38,7 @@ const LoginForm = () => {
                 type="button"
               >
                 Sign In
-              </button>
+              </button> or <NavLink className="underline" to='/registration'>Registration</NavLink>
             </div>
           </form>
         </div>

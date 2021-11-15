@@ -12,6 +12,7 @@ import NotFound from '../components/404'
 import Startup from './startup'
 import chatLayout from "../components/chat"
 import RegistrationForm from '../components/registration'
+import LoginForm from "../components/login";
 
 const OnlyAnonymousRoute = ({ component: Component, ...rest }) => {
   const user = useSelector((state) => state.auth.user)
@@ -51,7 +52,7 @@ const RootComponent = (props) => {
         <Startup>
           <Switch>
             <Route exact path="/" component={DummyView} />
-            <Route exact path="/login" component={chatLayout} />
+            <Route exact path="/login" component={LoginForm} />
             <Route exact path="/registration" component={RegistrationForm} />
             <Route exact path="/chat" component={chatLayout} />
             <Route exact path="/dashboard" component={Home} />
