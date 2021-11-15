@@ -4,14 +4,24 @@ import cors from 'cors'
 import sockjs from 'sockjs'
 import { renderToStaticNodeStream } from 'react-dom/server'
 import React from 'react'
-
 import cookieParser from 'cookie-parser'
+import mongooseService from './services/mongoose'
+
 import config from './config'
 import Html from '../client/html'
+import User from './model/User.model'
 
 require('colors')
 
 let Root
+mongooseService.connect()
+const user = new User({
+  login: 'nagibator3000',
+  password: 'superPASSWORD',
+  origin: 'ORIGIN'
+})
+user.save()
+
 try {
   // eslint-disable-next-line import/no-unresolved
   Root = require('../dist/assets/js/ssr/root.bundle').default
@@ -41,7 +51,7 @@ server.use('/api/', (req, res) => {
 
 const [htmlStart, htmlEnd] = Html({
   body: 'separator',
-  title: 'Skillcrucial'
+  title: 'Simple chat'
 }).split('separator')
 
 server.get('/', (req, res) => {
@@ -65,6 +75,8 @@ server.get('/*', (req, res) => {
 })
 
 const app = server.listen(port)
+
+console.log('isSocketsEnabled', config.isSocketsEnabled)
 
 if (config.isSocketsEnabled) {
   const echo = sockjs.createServer()
