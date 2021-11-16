@@ -23,6 +23,7 @@ try {
   // eslint-disable-next-line import/no-unresolved
   Root = require('../dist/assets/js/ssr/root.bundle').default
 } catch {
+  // eslint-disable-next-line no-console
   console.log('SSR not found. Please run "yarn run build:ssr"'.red)
 }
 
@@ -44,16 +45,47 @@ passport.use('jwt', passportJWT)
 middleware.forEach((it) => server.use(it))
 
 server.post('/api/v1/auth', async (req, res) => {
-  console.log(req.body)
+  console.log('auth:', req.body.login)
   try {
-    const user = await User.findAndValidateUser(req.body)
-
-    const payload = { uid: user.id }
+    const userRecord = await User.findAndValidateUser(req.body)
+    const payload = { uid: userRecord.id }
     const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
-    res.json({ status: 'ok', token })
+    res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 23 })
+    const user = {
+      id: userRecord.id,
+      login: userRecord.login,
+      origin: userRecord.origin
+    }
+    res.json({ status: 'ok', token, user })
   } catch (err) {
-    console.log(err)
-    res.json({ status: 'error', err })
+    console.log('error', err)
+    res.json({ status: 'error', message: err.message })
+  }
+})
+
+server.get('/api/v1/auth', async (req, res) => {
+  console.log('auth check:', req.cookies.token)
+  res.json({ status: 'In progress' })
+})
+
+server.post('/api/v1/reg', async (req, res) => {
+  console.log('reg:', req.body)
+  try {
+    const newUser = new User({
+      login: req.body.login,
+      password: req.body.password
+    })
+    await newUser.save()
+    res.json({ status: 'ok' })
+  } catch (err) {
+    if (err.code === 11000) {
+      const errorMessage = 'duplicate login'
+      console.log(errorMessage)
+      res.json({ status: 'error', error: errorMessage })
+    } else {
+      console.log(err)
+      res.json({ status: 'error', err })
+    }
   }
 })
 
