@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 import Head from "./head"
 import Channel from "./ui/channel";
+import { getSocket } from "../redux";
 
 const Chat = () => {
   const {name: userName, id: userId} = useSelector(state => state.auth.user)
@@ -37,7 +38,7 @@ const Chat = () => {
               {channels}
             </div>
 
-            <div className="px-4 mb-3 font-sans">Direct Messages</div>
+            <div className="px-4 mb-3 font-sans">Connected users</div>
 
             <div className="flex items-center mb-3 px-4">
               <span className="bg-green rounded-full block w-2 h-2 mr-2" />
@@ -54,7 +55,17 @@ const Chat = () => {
               <span className="border rounded-full block w-2 h-2 mr-2" />
               <span className="text-purple-lightest">killgt</span>
             </div>
-
+            <button
+              type="button"
+              onClick={() => {
+                const testSocket = getSocket()
+                testSocket.send('fasdfasdf sdaf asdf asdf asdf')
+                testSocket.send(JSON.stringify({ type: 'hello', id: '123321' }))
+                testSocket.send(JSON.stringify({ type: 'post', id: '123321' }))
+              }}
+            >
+              fff
+            </button>
 
             <div className="px-4 mb-3 font-sans">Applications</div>
 

@@ -26,7 +26,6 @@ let socket
 if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
   const initSocket = () => {
     socket = new SockJS(`${isBrowser ? window.location.origin : 'http://localhost'}/ws`)
-
     socket.onopen = () => {
       store.dispatch(socketActions.connected)
     }

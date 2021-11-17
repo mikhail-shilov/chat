@@ -28,6 +28,7 @@ try {
 }
 
 let connections = []
+// let matching = {}
 
 const port = process.env.PORT || 8090
 const server = express()
@@ -104,6 +105,11 @@ server.post('/api/v1/reg', async (req, res) => {
   }
 })
 
+server.get('/api/v1/conn', async (req, res) => {
+  console.log(connections)
+  res.json({ status: 'ok' })
+})
+
 server.use('/api/', (req, res) => {
   res.status(404)
   res.end()
@@ -142,7 +148,26 @@ if (config.isSocketsEnabled) {
   const echo = sockjs.createServer()
   echo.on('connection', (conn) => {
     connections.push(conn)
-    conn.on('data', async () => {})
+    console.log('Id of conn:', conn.id)
+    conn.on('data', async (data) => {
+      try {
+        const request = JSON.parse(data)
+        switch (request.type) {
+          case 'hello': {
+            console.log(`logon event from ${conn.id}`)
+            break
+          }
+          case 'post': {
+            console.log(`Post for channel general: `)
+            break
+          }
+          default: {
+            console.log('Unknown request type')
+            break
+          }
+        }
+      } catch (err) { console.log('Request incorrect:', err.message) }
+    })
 
     conn.on('close', () => {
       connections = connections.filter((c) => c.readyState !== 3)

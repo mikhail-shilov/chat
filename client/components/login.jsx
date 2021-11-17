@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Head from './head'
-import { checkSignIn, doSignIn } from '../redux/reducers/auth'
+import { doSignIn } from '../redux/reducers/auth'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -66,14 +66,6 @@ const LoginForm = () => {
           </form>
         </div>
         {previousError !== null && <div>Error: {previousError}</div>}
-        <button
-          type="button"
-          onClick={() => {
-            dispatch(checkSignIn())
-          }}
-        >
-          fff
-        </button>
       </div>
     </>
   )
