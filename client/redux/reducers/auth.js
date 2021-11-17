@@ -1,4 +1,5 @@
-import Cookies from "universal-cookie";
+import Cookies from 'universal-cookie'
+import { history } from '..'
 
 const SIGN_IN = 'SIGN_IN'
 const ERROR = 'ERROR'
@@ -8,8 +9,8 @@ const cookies = new Cookies()
 const initialState = {
   token: cookies.get('token'),
   user: {
-    name: 'LocalUser123',
-    id: '321321ff',
+    name: '',
+    id: '',
     origin: 'This is profile message'
   },
   previousError: null
@@ -19,8 +20,8 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case SIGN_IN:
       return { ...state, token: action.token, user: action.user }
-    case  ERROR:
-      return { ...state, previousError: action.errorMessage}
+    case ERROR:
+      return { ...state, previousError: action.errorMessage }
     default:
       return state
   }
@@ -50,6 +51,7 @@ export function doSignIn(login, password) {
         if (data.status === 'ok') {
           dispatch(signIn(data.token, data.user))
           dispatch(setErrorMessage(null))
+          history.push('/chat')
         }
       })
   }
@@ -60,9 +62,11 @@ export function checkSignIn() {
     fetch('/api/v1/auth')
       .then((r) => r.json())
       .then((data) => {
-        console.log(data)
-        if (data.status === 'error') dispatch(setErrorMessage(data.error))
-        if (data.status === 'ok') dispatch(setErrorMessage(null))
+        console.log('Auth by jwt. Received data:', data)
+        if (data.status === 'ok') {
+          dispatch(signIn(data.token, data.user))
+          history.push('/chat')
+        }
       })
   }
 }

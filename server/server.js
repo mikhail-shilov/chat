@@ -64,12 +64,27 @@ server.post('/api/v1/auth', async (req, res) => {
 })
 
 server.get('/api/v1/auth', async (req, res) => {
-  console.log('auth check:', req.cookies.token)
-  res.json({ status: 'In progress' })
+  try {
+    const jwtPayload = jwt.verify(req.cookies.token, config.secret)
+    console.log('jwtPayload', jwtPayload)
+    const userRecord = await User.findById(jwtPayload.uid)
+    const user = {
+      id: userRecord.id,
+      login: userRecord.login,
+      origin: userRecord.origin
+    }
+    const newPayload = { uid: userRecord.id }
+
+    const token = jwt.sign(newPayload, config.secret, { expiresIn: '48h' })
+
+    res.json({ status: 'ok', token, user })
+  } catch (err) {
+    console.log('error', err)
+    res.json({ status: 'error', message: err.message })
+  }
 })
 
 server.post('/api/v1/reg', async (req, res) => {
-  console.log('reg:', req.body)
   try {
     const newUser = new User({
       login: req.body.login,

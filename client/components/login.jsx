@@ -1,22 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Head from './head'
-import { doSignIn } from '../redux/reducers/auth'
+import { checkSignIn, doSignIn } from '../redux/reducers/auth'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.auth.user)
-  const token = useSelector((state) => state.auth.token)
   const previousError = useSelector((state) => state.auth.previousError)
   const [login, setLogin] = useState()
   const [password, setPassword] = useState()
-
-  useEffect(() => {
-    console.log(user)
-    console.log(token)
-  }, [user, token])
 
   return (
     <>
@@ -73,6 +66,14 @@ const LoginForm = () => {
           </form>
         </div>
         {previousError !== null && <div>Error: {previousError}</div>}
+        <button
+          type="button"
+          onClick={() => {
+            dispatch(checkSignIn())
+          }}
+        >
+          fff
+        </button>
       </div>
     </>
   )
