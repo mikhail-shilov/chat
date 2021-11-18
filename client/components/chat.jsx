@@ -7,6 +7,7 @@ import { getSocket } from "../redux";
 
 const Chat = () => {
   const {name: userName, id: userId} = useSelector(state => state.auth.user)
+  const token = useSelector(state => state.auth.token)
   const messages = useSelector(state => state.channel.channels.general.messages)
   const channels = Object.keys(useSelector(state => state.channel.channels))
    .map((nameOfChannel) => (<><span className="pr-1 text-grey-light">#</span> {nameOfChannel} <br /></>))
@@ -59,12 +60,19 @@ const Chat = () => {
               type="button"
               onClick={() => {
                 const testSocket = getSocket()
-                testSocket.send('fasdfasdf sdaf asdf asdf asdf')
-                testSocket.send(JSON.stringify({ type: 'hello', id: '123321' }))
-                testSocket.send(JSON.stringify({ type: 'post', id: '123321' }))
+                testSocket.send(JSON.stringify({ type: 'subscribe', token }))
+                testSocket.send(JSON.stringify({ type: 'broadcast',channel: 'general', token, message: 'sdafasdff sadfas' }))
               }}
             >
               fff
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                fetch('/api/v1/conn').then(r => r.json()).then((data)=>console.log(data))
+              }}
+            >
+              list of conn
             </button>
 
             <div className="px-4 mb-3 font-sans">Applications</div>

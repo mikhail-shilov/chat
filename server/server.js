@@ -13,6 +13,7 @@ import mongooseService from './services/mongoose'
 import config from './config'
 import Html from '../client/html'
 import User from './model/User.model'
+import SocketByLogin from './tools/socketByLogin'
 
 require('colors')
 
@@ -28,7 +29,7 @@ try {
 }
 
 let connections = []
-// let matching = {}
+const socketByLogin = new SocketByLogin()
 
 const port = process.env.PORT || 8090
 const server = express()
@@ -106,8 +107,7 @@ server.post('/api/v1/reg', async (req, res) => {
 })
 
 server.get('/api/v1/conn', async (req, res) => {
-  console.log(connections)
-  res.json({ status: 'ok' })
+  res.json(socketByLogin.list())
 })
 
 server.use('/api/', (req, res) => {
@@ -142,23 +142,34 @@ server.get('/*', (req, res) => {
 
 const app = server.listen(port)
 
-console.log('isSocketsEnabled', config.isSocketsEnabled)
-
 if (config.isSocketsEnabled) {
   const echo = sockjs.createServer()
   echo.on('connection', (conn) => {
     connections.push(conn)
-    console.log('Id of conn:', conn.id)
     conn.on('data', async (data) => {
       try {
         const request = JSON.parse(data)
         switch (request.type) {
-          case 'hello': {
-            console.log(`logon event from ${conn.id}`)
+          case 'subscribe': {
+            const { uid: userId } = jwt.verify(request.token, config.secret)
+            const { login } = await User.findById(userId)
+            socketByLogin.add(login, conn.id)
+            console.log(`${login}'s conn list is:`, socketByLogin.list(login))
             break
           }
-          case 'post': {
-            console.log(`Post for channel general: `)
+          case 'broadcast': {
+            console.log('request', request)
+            const { uid: userId } = jwt.verify(request.token, config.secret)
+            const { login } = await User.findById(userId)
+            const message = {
+              activity: 'broadcast',
+              author: login,
+              channel: 'general',
+              text: request.message
+            }
+            connections.forEach((connection) => {
+              connection.write(JSON.stringify(message))
+            })
             break
           }
           default: {
@@ -166,11 +177,23 @@ if (config.isSocketsEnabled) {
             break
           }
         }
-      } catch (err) { console.log('Request incorrect:', err.message) }
+      } catch (err) {
+        console.log('Request error:', err.message)
+      }
     })
 
     conn.on('close', () => {
-      connections = connections.filter((c) => c.readyState !== 3)
+
+      connections.forEach((connection) => {
+        console.log('Conn=?')
+
+        if (connection.readyState === 3) {
+          console.log('Conn=3 - remove')
+          socketByLogin.remove(connection.id)
+        }
+      })
+      connections = connections.filter((connection) => connection.readyState !== 3)
+
     })
   })
   echo.installHandlers(app, { prefix: '/ws' })
