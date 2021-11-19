@@ -164,7 +164,7 @@ if (config.isSocketsEnabled) {
             const message = {
               wsActivity: 'broadcast',
               author: login,
-              channel: 'general',
+              channel: request.channel,
               message: request.message
             }
             connections.forEach((connection) => {
@@ -173,7 +173,7 @@ if (config.isSocketsEnabled) {
             break
           }
           default: {
-            console.log('Unknown request type')
+            console.log('Unknown request type', request)
             break
           }
         }

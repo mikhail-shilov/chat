@@ -35,16 +35,27 @@ export default (state = initialState, action) => {
         ...state,
         channels: {
           ...state.channels,
-          [action.channel]: {
-            ...state.channels[action.channel],
-            messages: [
-              ...state.channels[action.channel].messages,
-              {
-                author: action.author,
-                message: action.message
-              }
-            ]
-          }
+          [action.channel]:
+            typeof state.channels[action.channel] !== 'undefined'
+              ? {
+                  ...state.channels[action.channel],
+                  messages: [
+                    ...state.channels[action.channel].messages,
+                    {
+                      author: action.author,
+                      message: action.message
+                    }
+                  ]
+                }
+              : {
+                  info: 'new channel',
+                  messages: [
+                    {
+                      author: action.author,
+                      message: action.message
+                    }
+                  ]
+                }
         }
       }
     }

@@ -1,17 +1,22 @@
-import React from "react"
-import Message from "./message";
+import React, { useEffect, useRef } from "react";
+import Message from './message'
 
-const Channel = ({messages}) => {
+const Channel = ({ messages }) => {
+  const divMustScroll = useRef(null)
   const listOfMessages = messages.map(
-    ({ author, message }, index) => <Message key={index} author={author} message={message} />
+    ({ author, message }, index) => (<Message key={index} author={author} message={message} />)
   )
+  useEffect(() => {
+    divMustScroll.current.scrollIntoView()
+  }, [messages])
 
   return (
-    <div className="px-6 py-4 flex-1 overflow-scroll-x">
+    <div className="px-6 py-4 flex-1 overflow-scroll-x overflow-y-scroll">
       {listOfMessages}
+      <div ref={divMustScroll} />
     </div>
-  )
 
+  )
 }
 Channel.propTypes = {}
 
