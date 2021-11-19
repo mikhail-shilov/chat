@@ -60,7 +60,7 @@ npm-debug.log
 
 /coverage
 /_build
-.env
+# .env
 dist
 .DS_Store
 */.DS_Store
