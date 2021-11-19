@@ -149,7 +149,7 @@ if (config.isSocketsEnabled) {
     conn.on('data', async (data) => {
       try {
         const request = JSON.parse(data)
-        switch (request.type) {
+        switch (request.wsActivity) {
           case 'subscribe': {
             const { uid: userId } = jwt.verify(request.token, config.secret)
             const { login } = await User.findById(userId)
@@ -162,10 +162,10 @@ if (config.isSocketsEnabled) {
             const { uid: userId } = jwt.verify(request.token, config.secret)
             const { login } = await User.findById(userId)
             const message = {
-              activity: 'broadcast',
+              wsActivity: 'broadcast',
               author: login,
               channel: 'general',
-              text: request.message
+              message: request.message
             }
             connections.forEach((connection) => {
               connection.write(JSON.stringify(message))
@@ -183,17 +183,12 @@ if (config.isSocketsEnabled) {
     })
 
     conn.on('close', () => {
-
       connections.forEach((connection) => {
-        console.log('Conn=?')
-
         if (connection.readyState === 3) {
-          console.log('Conn=3 - remove')
           socketByLogin.remove(connection.id)
         }
       })
       connections = connections.filter((connection) => connection.readyState !== 3)
-
     })
   })
   echo.installHandlers(app, { prefix: '/ws' })

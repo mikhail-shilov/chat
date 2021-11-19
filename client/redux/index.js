@@ -6,7 +6,8 @@ import SockJS from 'sockjs-client'
 
 import rootReducer from './reducers'
 import createHistory from './history'
-import socketActions from './sockets'
+import socketActions, { wsSubscribe } from './sockets'
+import { receiveMessage } from "./reducers/channel";
 
 export const history = createHistory()
 
@@ -28,12 +29,21 @@ if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
     socket = new SockJS(`${isBrowser ? window.location.origin : 'http://localhost'}/ws`)
     socket.onopen = () => {
       store.dispatch(socketActions.connected)
+      store.dispatch(wsSubscribe())
     }
 
     socket.onmessage = (message) => {
       // eslint-disable-next-line no-console
       console.log(JSON.parse(message.data))
-
+      const { wsActivity, author, message: wsMessage, channel } = JSON.parse(message.data)
+      switch (wsActivity) {
+        case 'broadcast': {
+          store.dispatch(receiveMessage(channel, author, wsMessage))
+          break
+        }
+        default:
+          console.log('Unknown ws event')
+      }
       // socket.close();
     }
 

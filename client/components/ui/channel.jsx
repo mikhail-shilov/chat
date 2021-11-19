@@ -3,7 +3,7 @@ import Message from "./message";
 
 const Channel = ({messages}) => {
   const listOfMessages = messages.map(
-    ({ nickname, message }, index) => <Message key={index} nickname={nickname} message={message} />
+    ({ author, message }, index) => <Message key={index} author={author} message={message} />
   )
 
   return (

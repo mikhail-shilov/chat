@@ -54,7 +54,7 @@ const RootComponent = (props) => {
             <Route exact path="/" component={DummyView} />
             <Route exact path="/login" component={LoginForm} />
             <Route exact path="/registration" component={RegistrationForm} />
-            <Route exact path="/chat" component={chatLayout} />
+            <Route exact path="/chat/:mode?/:channel?" component={chatLayout} />
             <Route exact path="/dashboard" component={Home} />
             <PrivateRoute exact path="/hidden-route" component={DummyView} />
             <OnlyAnonymousRoute exact path="/anonymous-route" component={DummyView} />
