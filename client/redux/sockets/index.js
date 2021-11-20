@@ -25,7 +25,7 @@ export const wsSubscribe = () => {
 
 export const wsSendMessage = (channel, message) => {
   return (dispatch, getState) => {
-    console.log('Send msg through ws.')
+    console.log('Send msg through ws.', channel, message)
     const socket = getSocket()
     socket.send(
       JSON.stringify({

@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 import config from '../config'
 import User from '../model/User.model'
 
@@ -9,8 +9,14 @@ export default class SocketHandler {
     this.connections = []
     this.credentialsHandler = new SocketByLogin()
     this.tokenToLogin = async (token) => {
-      const { uid: userId } = jwt.verify(token, config.secret)
       let login = null
+      let userId = null
+      try {
+        userId = jwt.verify(token, config.secret).uid
+      } catch (err) {
+        console.log('JWT verify error:', err.message)
+      }
+
       try {
         const user = await User.findById(userId)
         login = user.login
@@ -48,10 +54,11 @@ export default class SocketHandler {
         const message = {
           wsActivity: socketEvent.type,
           author: await this.tokenToLogin(socketEvent.token),
-          recipient: socketEvent.recipient,
+          recipient: socketEvent.channel,
           channel: socketEvent.channel,
           message: socketEvent.message
         }
+        console.log(message)
         this.connections.forEach((connection) => {
           if (this.showConnectionsByLogins('all').includes(connection.id)) {
             connection.write(JSON.stringify(message))

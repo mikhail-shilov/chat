@@ -25,7 +25,7 @@ const Chat = () => {
     )
   )
   useEffect(() => {
-    console.log('params:', mode, channel, userId, token.slice(2, 10))
+    console.log('params:', mode, channel, userId, token)
   }, [mode, channel, token, userId])
   const sendMessageHandler = (channelName, text) => {
     dispatch(wsSendMessage(channelName, text))

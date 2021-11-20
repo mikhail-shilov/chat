@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from "react-redux";
 import { checkSignIn } from "../redux/reducers/auth";
+import { wsSubscribe } from "../redux/sockets";
 
 const Startup = (props) => {
   const dispatch = useDispatch()
@@ -10,8 +11,9 @@ const Startup = (props) => {
   useEffect(() => {
     if (token) {
       dispatch(checkSignIn())
+      dispatch(wsSubscribe())
     }
-  }, [])
+  }, [token])
 
   return props.children
 }
