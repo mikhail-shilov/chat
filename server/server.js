@@ -14,6 +14,7 @@ import config from './config'
 import Html from '../client/html'
 import User from './model/User.model'
 import SocketByLogin from './tools/socketByLogin'
+import SocketHandler from "./tools/socketHandler";
 
 require('colors')
 
@@ -30,6 +31,8 @@ try {
 
 let connections = []
 const socketByLogin = new SocketByLogin()
+
+const socketHandler = new SocketHandler()
 
 const port = process.env.PORT || 8090
 const server = express()
@@ -70,6 +73,16 @@ server.get('/api/v1/auth', async (req, res) => {
     const jwtPayload = jwt.verify(req.cookies.token, config.secret)
     console.log('jwtPayload', jwtPayload)
     const userRecord = await User.findById(jwtPayload.uid)
+    console.log('correct(?) id', await User.findById(jwtPayload.uid))
+
+    try {
+      const errorUser = await User.findById(42)
+      console.log(errorUser)
+    } catch (err) {
+      console.log('!!!no user:', err.message)
+    }
+
+
     const user = {
       id: userRecord.id,
       login: userRecord.login,
@@ -107,7 +120,10 @@ server.post('/api/v1/reg', async (req, res) => {
 })
 
 server.get('/api/v1/conn', async (req, res) => {
-  res.json(socketByLogin.list())
+  console.log('connections ids:', socketHandler.showConnectionsIds())
+  console.log('authorized connections:', socketHandler.showConnectionsByLogins('all'))
+  console.log("test1's connections:", socketHandler.showConnectionsByLogins('test1'))
+  res.json({ status: 'ok' })
 })
 
 server.use('/api/', (req, res) => {
@@ -144,9 +160,14 @@ const app = server.listen(port)
 
 if (config.isSocketsEnabled) {
   const echo = sockjs.createServer()
+
   echo.on('connection', (conn) => {
+    socketHandler.newConnection(conn)
     connections.push(conn)
+
     conn.on('data', async (data) => {
+      socketHandler.listen(conn, data)
+
       try {
         const request = JSON.parse(data)
         switch (request.wsActivity) {
@@ -154,11 +175,11 @@ if (config.isSocketsEnabled) {
             const { uid: userId } = jwt.verify(request.token, config.secret)
             const { login } = await User.findById(userId)
             socketByLogin.add(login, conn.id)
-            console.log(`${login}'s conn list is:`, socketByLogin.list(login))
+            // console.log(`${login}'s conn list is:`, socketByLogin.list(login))
             break
           }
           case 'broadcast': {
-            console.log('request', request)
+            // console.log('request', request)
             const { uid: userId } = jwt.verify(request.token, config.secret)
             const { login } = await User.findById(userId)
             const message = {
@@ -183,6 +204,8 @@ if (config.isSocketsEnabled) {
     })
 
     conn.on('close', () => {
+      socketHandler.clearDeadConnections()
+
       connections.forEach((connection) => {
         if (connection.readyState === 3) {
           socketByLogin.remove(connection.id)

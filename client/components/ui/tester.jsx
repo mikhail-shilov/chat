@@ -15,7 +15,7 @@ const Tester = () => {
         type="button"
         onClick={() => {
           const testSocket = getSocket()
-          testSocket.send(JSON.stringify({ wsActivity: 'subscribe', token }))
+          testSocket.send(JSON.stringify({ type: 'subscribe', token }))
         }}
       >
         Subscribe
