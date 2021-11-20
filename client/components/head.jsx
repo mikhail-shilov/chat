@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 
 const Head = (props) => (
   <Helmet>
-    <title>OneMoreChat v0.2.1 - {props.title}</title>
+    <title>OneMoreChat v0.2.2 - {props.title}</title>
     <meta charSet="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#FF0000" />
