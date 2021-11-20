@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from "react-redux";
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 
 import Head from './head'
@@ -7,26 +7,23 @@ import Channel from './ui/channel'
 import Editor from './ui/editor'
 import Sidebar from './ui/sidebar'
 import Header from './ui/header'
-import { wsSendMessage } from "../redux/sockets";
+import { wsSendMessage } from '../redux/sockets'
 
-const Chat = () => {
+const ChatPage = () => {
   const dispatch = useDispatch()
   const { mode = 'channel', channel = 'general' } = useParams()
-  const { login, id: userId } = useSelector((state) => state.auth.user)
-  const token = useSelector((state) => state.auth.token)
+  const login = useSelector((state) => state.auth.user.login)
   const messages = useSelector((state) => state.channel.channels[channel].messages)
   const channels = Object.keys(useSelector((state) => state.channel.channels)).map(
     (nameOfChannel) => (
       <>
         <span className="pr-1 text-grey-light">#</span>
-        <Link to={`/chat/channel/${nameOfChannel}`}> {nameOfChannel} </Link>
+        <Link to={`/${mode}/${nameOfChannel}`}> {nameOfChannel} </Link>
         <br />
       </>
     )
   )
-  useEffect(() => {
-    console.log('params:', mode, channel, userId, token)
-  }, [mode, channel, token, userId])
+
   const sendMessageHandler = (channelName, text) => {
     dispatch(wsSendMessage(channelName, text))
   }
@@ -49,6 +46,4 @@ const Chat = () => {
   )
 }
 
-Chat.propTypes = {}
-
-export default React.memo(Chat)
+export default ChatPage

@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import path from 'path'
 import cors from 'cors'
 import sockjs from 'sockjs'
@@ -67,17 +67,7 @@ server.post('/api/v1/auth', async (req, res) => {
 server.get('/api/v1/auth', async (req, res) => {
   try {
     const jwtPayload = jwt.verify(req.cookies.token, config.secret)
-    console.log('jwtPayload', jwtPayload)
     const userRecord = await User.findById(jwtPayload.uid)
-    console.log('correct(?) id', await User.findById(jwtPayload.uid))
-
-    try {
-      const errorUser = await User.findById(42)
-      console.log(errorUser)
-    } catch (err) {
-      console.log('!!!no user:', err.message)
-    }
-
 
     const user = {
       id: userRecord.id,

@@ -14,18 +14,17 @@ export default {
   })
 }
 
-
 export const wsSubscribe = () => {
   return (dispatch, getState) => {
     const socket = getSocket()
-    console.log('Do subscribe through ws.')
+    // eslint-disable-next-line no-console
+    console.log('Do subscribe on messages by ws.')
     socket.send(JSON.stringify({ type: 'subscribe', token: getState().auth.token }))
   }
 }
 
 export const wsSendMessage = (channel, message) => {
   return (dispatch, getState) => {
-    console.log('Send msg through ws.', channel, message)
     const socket = getSocket()
     socket.send(
       JSON.stringify({

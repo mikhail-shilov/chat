@@ -6,8 +6,8 @@ import SockJS from 'sockjs-client'
 
 import rootReducer from './reducers'
 import createHistory from './history'
-import socketActions, { wsSubscribe } from './sockets'
-import { receiveMessage } from "./reducers/channel";
+import socketActions from './sockets'
+import { receiveMessage } from './reducers/channel'
 
 export const history = createHistory()
 
@@ -28,21 +28,21 @@ if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
   const initSocket = () => {
     socket = new SockJS(`${isBrowser ? window.location.origin : 'http://localhost'}/ws`)
     socket.onopen = () => {
-      store.dispatch(socketActions.connected)
-      store.dispatch(wsSubscribe())
+      store.dispatch(socketActions.connected())
+      // store.dispatch(wsSubscribe())
     }
 
     socket.onmessage = (message) => {
       // eslint-disable-next-line no-console
       console.log('ws input', JSON.parse(message.data))
-      const { wsActivity, author, message: wsMessage, channel } = JSON.parse(message.data)
+      const { wsActivity, author, message: text, channel } = JSON.parse(message.data)
       switch (wsActivity) {
         case 'broadcast': {
-          store.dispatch(receiveMessage(channel, author, wsMessage))
+          store.dispatch(receiveMessage(channel, author, text))
           break
         }
         case 'response': {
-          console.log(``)
+          // console.log('response')
           break
         }
         default:
@@ -52,8 +52,9 @@ if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
     }
 
     socket.onclose = () => {
-      store.dispatch(socketActions.disconnected)
+      store.dispatch(socketActions.disconnected())
       setTimeout(() => {
+        console.log('Try reconnect!')
         initSocket()
       }, 2000)
     }

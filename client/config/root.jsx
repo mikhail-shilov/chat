@@ -10,26 +10,31 @@ import DummyView from '../components/dummy-view'
 import NotFound from '../components/404'
 
 import Startup from './startup'
-import chatLayout from "../components/chat"
+import ChatPage from '../components/chat'
 import RegistrationForm from '../components/registration'
-import LoginForm from "../components/login";
+import LoginForm from '../components/login'
 
 const OnlyAnonymousRoute = ({ component: Component, ...rest }) => {
   const user = useSelector((state) => state.auth.user)
-  const token = useSelector((state) => state.token)
+  const token = useSelector((state) => state.auth.token)
   const func = (props) => {
-    if (!!user && !!user.name && !!token) <Redirect to={{ pathname: '/' }} />
+    if (!!user && !!user.login && !!token) return <Redirect to={{ pathname: '/' }} />
     return <Component {...props} />
   }
   return <Route {...rest} render={func} />
 }
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const user = useSelector((state) => state.auth.user)
-  const token = useSelector((state) => state.token)
-
+  const token = useSelector((state) => state.auth.token)
   const func = (props) => {
-    if (!!user && !!user.name && !!token) return <Component {...props} />
+    /* Думаю лучше обойтись одним токеном - а временное отсутствие данных
+     пользователя - обработать в компоненте Chat. Инче форма логина мигает -
+     некрасиво.
+     Либо надо вводить искусственную задержку и плейсхолдер на форме логина. */
+    // if (!!user && !!user.login && !!token) {
+    if (token) {
+      return <Component {...props} />
+    }
 
     return (
       <Redirect
@@ -51,10 +56,11 @@ const RootComponent = (props) => {
       <RouterSelector history={history} location={props.location} context={props.context}>
         <Startup>
           <Switch>
-            <Route exact path="/" component={DummyView} />
-            <Route exact path="/login" component={LoginForm} />
-            <Route exact path="/registration" component={RegistrationForm} />
-            <Route exact path="/chat/:mode?/:channel?" component={chatLayout} />
+            <OnlyAnonymousRoute exact path="/login" component={LoginForm} />
+            <OnlyAnonymousRoute exact path="/registration" component={RegistrationForm} />
+            <PrivateRoute exact path="/:mode?/:channel?" component={ChatPage} />
+
+            <Route exact path="/fsdafasdfasds/channel/:channel?" component={ChatPage} />
             <Route exact path="/dashboard" component={Home} />
             <PrivateRoute exact path="/hidden-route" component={DummyView} />
             <OnlyAnonymousRoute exact path="/anonymous-route" component={DummyView} />
