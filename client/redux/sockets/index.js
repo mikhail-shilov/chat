@@ -25,12 +25,11 @@ export const wsSubscribe = () => {
 
 export const wsSendMessage = (channel, message) => {
   return (dispatch, getState) => {
-    console.log('Do subscribe through ws.')
+    console.log('Send msg through ws.')
     const socket = getSocket()
-
     socket.send(
       JSON.stringify({
-        wsActivity: 'broadcast',
+        type: 'broadcast',
         channel,
         message,
         token: getState().auth.token

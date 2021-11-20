@@ -21,62 +21,80 @@ export default class SocketHandler {
     }
   }
 
-  async listen(connection, dataInSocket) {
+  async listen(currentConnection, dataInSocket) {
     let socketEvent = null
     try {
       socketEvent = JSON.parse(dataInSocket)
     } catch (err) {
       socketEvent = { type: 'badJSON' }
     }
-    switch (socketEvent.type) {
+    const {type = 'NoType'} = socketEvent
+    switch (type) {
       case 'subscribe': {
         const login = await this.tokenToLogin(socketEvent.token)
         console.log('SocketByLogin - subscribe(). Login:', login)
         if (login) {
-          this.credentialsHandler.add(login, connection.id)
+          this.credentialsHandler.add(login, currentConnection.id)
           console.log('Subscribe - ok')
-          connection.write(JSON.stringify({ status: 'ok', message: 'Subscribe allowed' }))
-          this.credentialsHandler.add(login, connection.id)
-
+          currentConnection.write(JSON.stringify({ wsActivity: 'response', type, status: 'ok' }))
+          this.credentialsHandler.add(login, currentConnection.id)
         } else {
           console.log('Subscribe - error')
-          connection.write(JSON.stringify({ status: 'error', message: 'Subscribe not allowed' }))
+          currentConnection.write(JSON.stringify({ wsActivity: 'response', type, status: 'error' }))
         }
-
         break
       }
-      /*
       case 'broadcast': {
-        // console.log('request', request)
-        {}
         const message = {
-          wsActivity: 'broadcast',
-          author: login,
-          channel: request.channel,
-          message: request.message
+          wsActivity: socketEvent.type,
+          author: await this.tokenToLogin(socketEvent.token),
+          recipient: socketEvent.recipient,
+          channel: socketEvent.channel,
+          message: socketEvent.message
         }
-        connections.forEach((connection) => {
-          connection.write(JSON.stringify(message))
+        this.connections.forEach((connection) => {
+          if (this.showConnectionsByLogins('all').includes(connection.id)) {
+            connection.write(JSON.stringify(message))
+          }
         })
         break
       }
-
-       */
+      case 'private': {
+        const message = {
+          wsActivity: socketEvent.type,
+          author: await this.tokenToLogin(socketEvent.token),
+          recipient: socketEvent.recipient,
+          message: socketEvent.message
+        }
+        this.connections.forEach((connection) => {
+          if (this.showConnectionsByLogins(socketEvent.recipient).includes(connection.id)) {
+            connection.write(JSON.stringify(message))
+          }
+        })
+        break
+      }
       default: {
-        console.log('Unknown request type')
+        console.log('Unknown request type', socketEvent)
         break
       }
     }
-
-    console.log('Handled event:', socketEvent.type)
+    console.log('Handled event:', type)
   }
 
-  broadcast() {
-    console.log('Event send to all')
+  broadcast(message) {
+    this.connections.forEach((connection) => {
+      if (this.showConnectionsByLogins('all').includes(connection.id)) {
+        connection.write(JSON.stringify(message))
+      }
+    })
   }
 
-  singlecast(user) {
-    console.log(`Event send to ${user}`)
+  singlecast(message, recipient) {
+    this.connections.forEach((connection) => {
+      if (this.showConnectionsByLogins(recipient).includes(connection.id)) {
+        connection.write(JSON.stringify(message))
+      }
+    })
   }
 
   newConnection(connection) {

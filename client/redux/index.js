@@ -34,11 +34,15 @@ if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
 
     socket.onmessage = (message) => {
       // eslint-disable-next-line no-console
-      console.log(JSON.parse(message.data))
+      console.log('ws input', JSON.parse(message.data))
       const { wsActivity, author, message: wsMessage, channel } = JSON.parse(message.data)
       switch (wsActivity) {
         case 'broadcast': {
           store.dispatch(receiveMessage(channel, author, wsMessage))
+          break
+        }
+        case 'response': {
+          console.log(``)
           break
         }
         default:

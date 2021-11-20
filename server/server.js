@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { response } from "express";
 import path from 'path'
 import cors from 'cors'
 import sockjs from 'sockjs'
@@ -13,8 +13,7 @@ import mongooseService from './services/mongoose'
 import config from './config'
 import Html from '../client/html'
 import User from './model/User.model'
-import SocketByLogin from './tools/socketByLogin'
-import SocketHandler from "./tools/socketHandler";
+import SocketHandler from './tools/socketHandler'
 
 require('colors')
 
@@ -28,9 +27,6 @@ try {
   // eslint-disable-next-line no-console
   console.log('SSR not found. Please run "yarn run build:ssr"'.red)
 }
-
-let connections = []
-const socketByLogin = new SocketByLogin()
 
 const socketHandler = new SocketHandler()
 
@@ -126,6 +122,12 @@ server.get('/api/v1/conn', async (req, res) => {
   res.json({ status: 'ok' })
 })
 
+server.get('/api/v1/adm', async (req, res) => {
+  socketHandler.broadcast({ type: 'response', message: 'to all' })
+  socketHandler.singlecast({ type: 'response', message: 'to test1' }, 'test1')
+  res.json({ status: 'ok' })
+})
+
 server.use('/api/', (req, res) => {
   res.status(404)
   res.end()
@@ -163,55 +165,11 @@ if (config.isSocketsEnabled) {
 
   echo.on('connection', (conn) => {
     socketHandler.newConnection(conn)
-    connections.push(conn)
-
     conn.on('data', async (data) => {
-      socketHandler.listen(conn, data)
-
-      try {
-        const request = JSON.parse(data)
-        switch (request.wsActivity) {
-          case 'subscribe': {
-            const { uid: userId } = jwt.verify(request.token, config.secret)
-            const { login } = await User.findById(userId)
-            socketByLogin.add(login, conn.id)
-            // console.log(`${login}'s conn list is:`, socketByLogin.list(login))
-            break
-          }
-          case 'broadcast': {
-            // console.log('request', request)
-            const { uid: userId } = jwt.verify(request.token, config.secret)
-            const { login } = await User.findById(userId)
-            const message = {
-              wsActivity: 'broadcast',
-              author: login,
-              channel: request.channel,
-              message: request.message
-            }
-            connections.forEach((connection) => {
-              connection.write(JSON.stringify(message))
-            })
-            break
-          }
-          default: {
-            console.log('Unknown request type', request)
-            break
-          }
-        }
-      } catch (err) {
-        console.log('Request error:', err.message)
-      }
+      await socketHandler.listen(conn, data)
     })
-
     conn.on('close', () => {
       socketHandler.clearDeadConnections()
-
-      connections.forEach((connection) => {
-        if (connection.readyState === 3) {
-          socketByLogin.remove(connection.id)
-        }
-      })
-      connections = connections.filter((connection) => connection.readyState !== 3)
     })
   })
   echo.installHandlers(app, { prefix: '/ws' })
