@@ -1,8 +1,7 @@
 import React from 'react'
-import Tester from './tester'
 
 const Sidebar = ({ login, channels }) => (
-  <div className="bg-purple-800 text-purple-300 w-2/12 pb-6 hidden md:block">
+  <div className="bg-purple-800 text-purple-300 w-full pb-6 md:block md:w-3/12">
     <h1 className="text-white  text-3xl mb-2 mt-3 px-4 font-sans flex justify-between">
       <span>@ OneMoreChat</span>
     </h1>
@@ -12,8 +11,6 @@ const Sidebar = ({ login, channels }) => (
     </div>
     <div className="px-4 mb-2 font-sans">Channels</div>
     <div className="bg-teal-500 mb-6 py-1 px-4 text-white font-semi-bold ">{channels}</div>
-    <Tester />
-
     <div className="px-4 mb-3 font-sans">Settings</div>
   </div>
 )

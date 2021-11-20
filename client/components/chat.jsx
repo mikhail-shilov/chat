@@ -34,7 +34,7 @@ const Chat = () => {
   return (
     <>
       <Head title="chat" />
-      <div className="w-full h-screen flex border shadow bg-white text-2xl">
+      <div className="w-full h-screen flex flex-col md:flex-row border shadow bg-white text-2xl">
         <Sidebar channels={channels} login={login} />
         <div className="w-full flex flex-col">
           <Header
