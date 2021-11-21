@@ -3,10 +3,10 @@ import React, { useState } from 'react'
 const Editor = ({ channel, handler }) => {
   const [textOfMessage, setTextOfMessage] = useState()
   return (
-    <div className="flex m-6 rounded-lg border-2 border-grey overflow-hidden">
+    <div className="flex m-6 overflow-hidden">
       <input
         type="text"
-        className="w-full px-4"
+        className="w-full border border-grey rounded-lg p-2"
         placeholder={`Message to #${channel}`}
         value={textOfMessage}
         onKeyPress={(e) => {
