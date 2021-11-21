@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import Head from './head'
 import Channel from './ui/channel'
@@ -11,18 +11,10 @@ import { wsSendMessage } from '../redux/sockets'
 
 const ChatPage = () => {
   const dispatch = useDispatch()
-  const { mode = 'channel', channel = 'general' } = useParams()
+  const { channel = 'general' } = useParams() // mode = 'channel',
   const login = useSelector((state) => state.auth.user.login)
   const messages = useSelector((state) => state.channel.channels[channel].messages)
-  const channels = Object.keys(useSelector((state) => state.channel.channels)).map(
-    (nameOfChannel) => (
-      <>
-        <span className="pr-1 text-grey-light">#</span>
-        <Link to={`/${mode}/${nameOfChannel}`}> {nameOfChannel} </Link>
-        <br />
-      </>
-    )
-  )
+  const channels = Object.keys(useSelector((state) => state.channel.channels))
 
   const sendMessageHandler = (channelName, text) => {
     dispatch(wsSendMessage(channelName, text))
