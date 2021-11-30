@@ -17,6 +17,7 @@ import config from './config'
 import Html from '../client/html'
 
 import SocketHandler from './tools/socketHandler'
+import log from './middleware/log'
 
 require('colors')
 
@@ -67,7 +68,7 @@ server.post('/api/v1/auth', async (req, res) => {
   }
 })
 
-server.get('/api/v1/auth', async (req, res) => {
+server.get('/api/v1/auth', log, async (req, res) => {
   try {
     const jwtPayload = jwt.verify(req.cookies.token, config.secret)
     const userRecord = await User.findById(jwtPayload.uid)
