@@ -1,5 +1,7 @@
 import React from "react"
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+
 import { getSocket } from "../../redux";
 
 const Tester = () => {
@@ -37,7 +39,7 @@ const Tester = () => {
         className="border w-full"
         type="button"
         onClick={() => {
-          fetch('/api/v1/adm')
+          fetch('/api/v1/adm/users')
             .then((r) => r.json())
             .then((data) => console.log(data))
         }}
@@ -62,6 +64,9 @@ const Tester = () => {
       >
         post msg
       </button>
+      <Link to="/channel/cats">cat</Link>
+      <Link to="/channel/general">gen</Link>
+      <Link to="/channel/system">system</Link>
     </div>
   )
 }

@@ -68,7 +68,7 @@ server.post('/api/v1/auth', async (req, res) => {
   }
 })
 
-server.get('/api/v1/auth', log, async (req, res) => {
+server.get('/api/v1/auth', async (req, res) => {
   try {
     const jwtPayload = jwt.verify(req.cookies.token, config.secret)
     const userRecord = await User.findById(jwtPayload.uid)
@@ -111,16 +111,27 @@ server.post('/api/v1/reg', async (req, res) => {
 
 server.get('/api/v1/conn', async (req, res) => {
   console.log('connections ids:', socketHandler.showConnectionsIds())
+  console.log('connections users:', socketHandler.showLoggedUsers())
   console.log('authorized connections:', socketHandler.showConnectionsByLogins('all'))
   console.log("test1's connections:", socketHandler.showConnectionsByLogins('test1'))
   res.json({ status: 'ok' })
 })
 
-server.get('/api/v1/adm', auth(['new_user']), async (req, res) => {
-  console.log('Check login... Ok!')
-  // socketHandler.broadcast({ type: 'response', message: 'to all' })
-  // socketHandler.singlecast({ type: 'response', message: 'to test1' }, 'test1')
-  res.json({ status: 'ok', auth: 'ok' })
+server.get('/api/v1/adm/users', auth(['new_user']), log, async (req, res) => {
+  const loggedUsers = socketHandler.showLoggedUsers()
+  res.json({ status: 'ok', users: loggedUsers })
+})
+
+server.delete('/api/v1/adm/logout/:user', log, async (req, res) => {
+  const { user } = req.params
+  if (socketHandler.credentialsHandler.list(user)) {
+    const broadcastMessage = `User ${user} was logout from chat.`
+    socketHandler.broadcast({ wsActivity: 'system_broadcast', message: broadcastMessage })
+    socketHandler.singlecast({ wsActivity: 'kick', message: 'Go away!' }, user)
+    res.json({ status: 'ok', logout: user })
+  } else {
+    res.json({ status: 'error', message: 'user not logged' })
+  }
 })
 
 server.use('/api/', (req, res) => {

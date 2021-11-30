@@ -7,7 +7,8 @@ import SockJS from 'sockjs-client'
 import rootReducer from './reducers'
 import createHistory from './history'
 import socketActions from './sockets'
-import { receiveMessage } from './reducers/channel'
+import { receiveMessage } from './reducers/channels'
+import { logOut } from './reducers/auth'
 
 export const history = createHistory()
 
@@ -39,6 +40,15 @@ if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
       switch (wsActivity) {
         case 'broadcast': {
           store.dispatch(receiveMessage(channel, author, text))
+          break
+        }
+        case 'system_broadcast': {
+          store.dispatch(receiveMessage('system', 'system', text))
+          break
+        }
+        case 'kick': {
+          console.log('kick')
+          store.dispatch(logOut())
           break
         }
         case 'response': {

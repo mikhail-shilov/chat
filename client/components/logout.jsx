@@ -4,14 +4,12 @@ import { useDispatch } from 'react-redux'
 import Cookies from 'universal-cookie'
 
 const Logout = () => {
-  const cookies = new Cookies()
   const dispatch = useDispatch()
+  const cookies = new Cookies()
 
-  useEffect(async () => {
-    console.log(cookies.remove('token'))
-    setTimeout(() => {
-      window.location = '/'
-    }, 0)
+  useEffect(() => {
+    cookies.remove('token', { path: '/' })
+    window.location = '/'
   }, [])
 
   return (

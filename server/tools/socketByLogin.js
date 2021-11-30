@@ -4,7 +4,12 @@ export default class SocketByLogin {
   }
 
   list(userId) {
-    return typeof userId !== 'undefined' ? this.matching[userId] : this.matching
+    let output = null
+    if (typeof userId !== 'undefined') {
+      if (!!this.matching[userId] && this.matching[userId].length > 0)
+        output = this.matching[userId]
+    } else if (Object.keys(this.matching).length > 0) output = this.matching
+    return output
   }
 
   add(login, connectionId) {

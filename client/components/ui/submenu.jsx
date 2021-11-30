@@ -1,14 +1,13 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
-const Submenu = ({ header, prefix = '#', subdomain, items }) => {
+const Submenu = ({ header, items }) => {
   const elements = items.map((item) => (
     <>
-      <span className="pr-1 text-grey-light">{prefix}</span>
-      <Link to={`/${subdomain}/${item}`}> {item} </Link>
+      {item}
       <br />
     </>
   ))
+
 
   return (
     <div className="flex flex-col w-full">

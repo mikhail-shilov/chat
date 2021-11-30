@@ -73,3 +73,10 @@ export function checkSignIn() {
       })
   }
 }
+
+export function logOut() {
+  return () => {
+    cookies.remove('token', { path: '/' })
+    window.location = ''
+  }
+}

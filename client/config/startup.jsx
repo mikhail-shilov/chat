@@ -10,6 +10,7 @@ const Startup = (props) => {
   const token = useSelector((state) => state.auth.token)
   const login = useSelector((state) => state.auth.user.login)
   const isSocketReady = useSelector((state) => state.auth.isSocketReady)
+
   useEffect(() => {
     if (token) {
       dispatch(checkSignIn())
@@ -22,6 +23,8 @@ const Startup = (props) => {
       dispatch(wsSubscribe())
     }
   }, [isSocketReady, token, login])
+
+
 
   return props.children
 }

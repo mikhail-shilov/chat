@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken'
 import config from '../config'
 import User from '../model/User.model'
 
@@ -34,7 +34,7 @@ export default class SocketHandler {
     } catch (err) {
       socketEvent = { type: 'badJSON' }
     }
-    const {type = 'NoType'} = socketEvent
+    const { type = 'NoType' } = socketEvent
     switch (type) {
       case 'subscribe': {
         const login = await this.tokenToLogin(socketEvent.token)
@@ -97,11 +97,17 @@ export default class SocketHandler {
   }
 
   singlecast(message, recipient) {
-    this.connections.forEach((connection) => {
-      if (this.showConnectionsByLogins(recipient).includes(connection.id)) {
-        connection.write(JSON.stringify(message))
-      }
-    })
+    console.log('Singlecast')
+    if (this.credentialsHandler.list(recipient)) {
+      console.log('User present')
+      this.connections.forEach((connection) => {
+        console.log('all conn')
+        if (this.showConnectionsByLogins(recipient).includes(connection.id)) {
+          console.log('not all conn')
+          connection.write(JSON.stringify(message))
+        }
+      })
+    }
   }
 
   newConnection(connection) {
@@ -117,8 +123,10 @@ export default class SocketHandler {
     this.connections = this.connections.filter((connection) => connection.readyState !== 3)
   }
 
-  showConnections() {
-    return [...this.connections]
+
+
+  showLoggedUsers() {
+    return Object.keys(this.credentialsHandler.list())
   }
 
   showConnectionsIds() {
@@ -134,4 +142,7 @@ export default class SocketHandler {
     }
     return output
   }
+
+
+
 }
