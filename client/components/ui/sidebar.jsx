@@ -17,7 +17,10 @@ const Sidebar = ({ login, channels }) => (
     </div>
     <Tester/>
     <div className="px-4 mb-3 font-sans">
-      <Link to="/logout">Settings</Link>
+      <Link to="/administration">Administration</Link>
+    </div>
+    <div className="px-4 mb-3 font-sans">
+      <Link to="/settings">Settings</Link>
     </div>
     <div className="px-4 mb-3 font-sans">
       <Link to="/logout">Logout</Link>

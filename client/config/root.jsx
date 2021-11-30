@@ -10,7 +10,7 @@ import DummyView from '../components/dummy-view'
 import NotFound from '../components/404'
 
 import Startup from './startup'
-import ChatPage from '../components/chat'
+import ChatPage from '../components/main'
 import RegistrationForm from '../components/registration'
 import LoginForm from '../components/login'
 import Logout from "../components/logout";

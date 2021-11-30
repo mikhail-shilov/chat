@@ -4,6 +4,7 @@ import auth from './auth'
 import reg from './reg'
 import channel from './channels'
 import direct from './direct'
+import admin from './admin'
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -11,7 +12,8 @@ const createRootReducer = (history) =>
     auth,
     reg,
     channel,
-    direct
+    direct,
+    admin
   })
 
 export default createRootReducer

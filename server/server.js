@@ -117,7 +117,7 @@ server.get('/api/v1/conn', async (req, res) => {
   res.json({ status: 'ok' })
 })
 
-server.get('/api/v1/adm/users', auth(['new_user']), log, async (req, res) => {
+server.get('/api/v1/adm/users', auth(['admin']), log, async (req, res) => {
   const loggedUsers = socketHandler.showLoggedUsers()
   res.json({ status: 'ok', users: loggedUsers })
 })
