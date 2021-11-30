@@ -34,6 +34,18 @@ const Tester = () => {
       </button>
       <br />
       <button
+        className="border w-full"
+        type="button"
+        onClick={() => {
+          fetch('/api/v1/adm')
+            .then((r) => r.json())
+            .then((data) => console.log(data))
+        }}
+      >
+        /api/v1/adm
+      </button>
+      <br />
+      <button
         className='border w-full'
         type="button"
         onClick={() => {

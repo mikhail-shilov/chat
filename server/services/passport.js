@@ -1,16 +1,17 @@
-import PassportJWT from 'passport-jwt'
+import passportJWT from 'passport-jwt'
 import User from '../model/User.model'
+import config from '../config'
 
 const cookieExtractor = (req) => {
-  return req && req.cookie && req.cookie.token
+  return req && req.cookies && req.cookies.token // Attention cookies or cookie!
 }
 
 const jwtOptions = {
-  secretOrKey: 'secret',
-  jwtFromRequest: PassportJWT.ExtractJwt.fromExtractors([cookieExtractor])
+  secretOrKey: config.secret,
+  jwtFromRequest: passportJWT.ExtractJwt.fromExtractors([cookieExtractor])
 }
 
-const jwtStrategy = new PassportJWT.Strategy(jwtOptions, (jwtPayload, done) => {
+const jwtStrategy = new passportJWT.Strategy(jwtOptions, (jwtPayload, done) => {
   User.findById(jwtPayload.uid, (err, user) => {
     if (err) {
       return done(err, null)

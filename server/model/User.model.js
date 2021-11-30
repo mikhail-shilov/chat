@@ -29,6 +29,8 @@ userSchema.method({
 
 userSchema.statics = {
   async findAndValidateUser({ login, password }) {
+    console.log('testStrat')
+
     if (!login) {
       throw new Error('No login')
     }

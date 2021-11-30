@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express'
 import path from 'path'
 import cors from 'cors'
 import sockjs from 'sockjs'
@@ -10,9 +10,12 @@ import jwt from 'jsonwebtoken'
 
 import passportJWT from './services/passport'
 import mongooseService from './services/mongoose'
+import auth from './middleware/auth'
+import User from './model/User.model'
+
 import config from './config'
 import Html from '../client/html'
-import User from './model/User.model'
+
 import SocketHandler from './tools/socketHandler'
 
 require('colors')
@@ -41,7 +44,7 @@ const middleware = [
   express.json({ limit: '50mb', extended: true }),
   cookieParser()
 ]
-passport.use('jwt', passportJWT)
+passport.use('jwt', passportJWT.jwt)
 
 middleware.forEach((it) => server.use(it))
 
@@ -112,10 +115,11 @@ server.get('/api/v1/conn', async (req, res) => {
   res.json({ status: 'ok' })
 })
 
-server.get('/api/v1/adm', async (req, res) => {
-  socketHandler.broadcast({ type: 'response', message: 'to all' })
-  socketHandler.singlecast({ type: 'response', message: 'to test1' }, 'test1')
-  res.json({ status: 'ok' })
+server.get('/api/v1/adm', auth(['new_user']), async (req, res) => {
+  console.log('Check login... Ok!')
+  // socketHandler.broadcast({ type: 'response', message: 'to all' })
+  // socketHandler.singlecast({ type: 'response', message: 'to test1' }, 'test1')
+  res.json({ status: 'ok', auth: 'ok' })
 })
 
 server.use('/api/', (req, res) => {

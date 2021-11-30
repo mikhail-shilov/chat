@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Submenu from './submenu'
+import Tester from "./tester";
 
 const Sidebar = ({ login, channels }) => (
   <div className="flex flex-col w-full md:w-64 bg-purple-800 text-purple-300 pb-6">
@@ -14,6 +15,7 @@ const Sidebar = ({ login, channels }) => (
     <div className="flex flex-grow">
       <Submenu header="Channels" prefix="#" subdomain="channel" items={channels} />
     </div>
+    <Tester/>
     <div className="px-4 mb-3 font-sans">
       <Link to="/logout">Settings</Link>
     </div>
