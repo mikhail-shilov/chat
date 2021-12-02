@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 const Editor = ({ channel, handler }) => {
   const [textOfMessage, setTextOfMessage] = useState()
   return (
-    <div className="flex m-6 overflow-hidden">
+    <div className="editor flex m-6 overflow-hidden">
       <input
         type="text"
         className="w-full border border-grey rounded-lg p-2"

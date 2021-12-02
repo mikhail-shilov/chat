@@ -43,9 +43,12 @@ const Main = () => {
   return (
     <>
       <Head title="chat" />
-      <div className="w-full h-screen flex flex-col md:flex-row border shadow bg-white text-2xl">
+      <div
+        id='main'
+        className="main w-full h-full flex flex-col md:flex-row text-2xl fixed"
+      >
         <Sidebar channels={linksChannels} login={login} />
-        <div className="w-full h-full flex flex-col">
+        <div className="content flex flex-grow">
           <Switch>
             <Route exact path="/settings" component={DummyView} />
             <Route exact path="/administration" component={Admin} />

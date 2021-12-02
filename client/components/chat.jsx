@@ -14,7 +14,7 @@ const Chat = ({ channel }) => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="flex-grow flex flex-col">
       <Header channelName={channel} channelInfo={info} />
       <Channel messages={messages} />
       <Editor channel={channel} handler={sendMessageHandler} />
