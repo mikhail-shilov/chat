@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 
-const Editor = ({ channel, handler }) => {
+const Editor = ({ connectionStatus, channel, handler }) => {
   const [textOfMessage, setTextOfMessage] = useState()
   return (
     <div className="editor flex m-6 overflow-hidden">
       <input
+        disabled={!connectionStatus}
         type="text"
         className="w-full border border-grey rounded-lg p-2"
         placeholder={`Message to #${channel}`}

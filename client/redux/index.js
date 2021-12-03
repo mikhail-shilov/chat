@@ -63,6 +63,7 @@ if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
 
     socket.onclose = () => {
       store.dispatch(socketActions.disconnected())
+
       setTimeout(() => {
         console.log('Try reconnect!')
         initSocket()

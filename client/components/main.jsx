@@ -13,8 +13,9 @@ const Main = () => {
   const dispatch = useDispatch()
   const { channel = 'general' } = useParams() // mode = 'channel',
   const login = useSelector((state) => state.auth.user.login)
+  const connectionStatus = useSelector((state) => state.auth.isSocketReady)
   const channels = useSelector((state) => state.channel.channels)
-  const linksChannels = Object.keys(useSelector((state) => state.channel.channels))
+  const elChannels = Object.keys(channels)
     .reduce(
       (acc, keyName) => [
         ...acc,
@@ -43,17 +44,14 @@ const Main = () => {
   return (
     <>
       <Head title="chat" />
-      <div
-        id='main'
-        className="main w-full h-full flex flex-col md:flex-row text-2xl fixed"
-      >
-        <Sidebar channels={linksChannels} login={login} />
+      <div id="main" className="main w-full h-full flex flex-col md:flex-row text-2xl fixed">
+        <Sidebar channels={elChannels} login={login} connectionStatus={connectionStatus} />
         <div className="content flex flex-grow">
           <Switch>
             <Route exact path="/settings" component={DummyView} />
             <Route exact path="/administration" component={Admin} />
             <Route>
-              <Chat channel={channel} />
+              <Chat channel={channel} connectionStatus={connectionStatus} />
             </Route>
           </Switch>
         </div>

@@ -5,7 +5,7 @@ import Channel from './ui/channel'
 import Editor from './ui/editor'
 import { wsSendMessage } from '../redux/sockets'
 
-const Chat = ({ channel }) => {
+const Chat = ({ channel, connectionStatus }) => {
   const dispatch = useDispatch()
   const { info, messages } = useSelector((state) => state.channel.channels[channel])
   const sendMessageHandler = (channelName, text) => {
@@ -14,8 +14,8 @@ const Chat = ({ channel }) => {
 
   return (
     <div className="flex-grow flex flex-col">
-      <Channel messages={messages} channel={channel} info={info} />
-      <Editor channel={channel} handler={sendMessageHandler} />
+      <Channel messages={messages} channel={channel} info={info} connectionStatus={connectionStatus} />
+      <Editor channel={channel} connectionStatus={connectionStatus} handler={sendMessageHandler} />
     </div>
   )
 }

@@ -13,7 +13,7 @@ const initialState = {
   token: cookies.get('token'),
   user: {},
   previousError: null,
-  isSocketReady: false
+  isSocketReady: false,
 }
 
 export default (state = initialState, action) => {

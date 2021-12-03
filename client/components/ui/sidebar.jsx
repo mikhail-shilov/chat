@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Submenu from './submenu'
+import Indicator from "./indicator";
 
-const Sidebar = ({ login, channels }) => {
+const Sidebar = ({ login, channels, connectionStatus }) => {
   const [displayMenu, setDisplayMenu] = useState(false)
   useEffect(() => {}, [displayMenu])
 
@@ -28,15 +29,15 @@ const Sidebar = ({ login, channels }) => {
         </button>
       </h1>
       <button
-        className='text-left'
+        className="text-left"
         type="button"
         onClick={() => {
           setDisplayMenu(false)
         }}
       >
         <div className={`controls ${displayMenu ? 'flex' : 'hidden'} md:flex flex-col`}>
-          <div className="flex  mb-12 px-4">
-            <span className="bg-green-100 rounded-full block w-2 h-2 mr-2" />
+          <div className="flex mb-12 px-4">
+            <Indicator status={connectionStatus}/>
             <span>{login}</span>
           </div>
           <div className="flex flex-grow">
