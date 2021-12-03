@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import Channel from './ui/channel'
 import Editor from './ui/editor'
-import Header from './ui/header'
 import { wsSendMessage } from '../redux/sockets'
 
 const Chat = ({ channel }) => {
@@ -15,8 +14,7 @@ const Chat = ({ channel }) => {
 
   return (
     <div className="flex-grow flex flex-col">
-      <Header channelName={channel} channelInfo={info} />
-      <Channel messages={messages} />
+      <Channel messages={messages} channel={channel} info={info} />
       <Editor channel={channel} handler={sendMessageHandler} />
     </div>
   )

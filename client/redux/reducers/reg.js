@@ -1,3 +1,5 @@
+import { doSignIn } from "./auth";
+
 const ERROR = 'ERROR'
 
 const initialState = {
@@ -27,11 +29,15 @@ export function requestRegistration({ login, password }) {
         password
       })
     })
-      .then((r) => r.json())
+      .then((response) => response.json())
       .then((data) => {
         console.log(data)
         if (data.status === 'error') dispatch(setErrorMessage(data.error))
-        if (data.status === 'ok') dispatch(setErrorMessage(null))
+        if (data.status === 'ok') {
+          dispatch(setErrorMessage(null))
+          dispatch(doSignIn(login, password))
+          console.log('Complete reg - logging in...')
+        }
       })
   }
 }

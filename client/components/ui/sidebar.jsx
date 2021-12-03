@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Submenu from './submenu'
-import Tester from './tester'
 
 const Sidebar = ({ login, channels }) => {
   const [displayMenu, setDisplayMenu] = useState(false)
+  useEffect(() => {}, [displayMenu])
 
   return (
     <div className="flex flex-col w-full md:max-h-screen md:w-64 md:overflow-y-auto bg-purple-800 text-purple-300">
@@ -27,25 +27,32 @@ const Sidebar = ({ login, channels }) => {
           </svg>
         </button>
       </h1>
-      <div className={`controls ${displayMenu? 'flex': 'hidden'} md:flex flex-col`}>
-        <div className="flex items-center mb-12 px-4">
-          <span className="bg-green-100 rounded-full block w-2 h-2 mr-2" />
-          <span>{login}</span>
+      <button
+        className='text-left'
+        type="button"
+        onClick={() => {
+          setDisplayMenu(false)
+        }}
+      >
+        <div className={`controls ${displayMenu ? 'flex' : 'hidden'} md:flex flex-col`}>
+          <div className="flex  mb-12 px-4">
+            <span className="bg-green-100 rounded-full block w-2 h-2 mr-2" />
+            <span>{login}</span>
+          </div>
+          <div className="flex flex-grow">
+            <Submenu header="Channels" prefix="#" subdomain="channel" items={channels} />
+          </div>
+          <div className="px-4 mb-3 font-sans">
+            <Link to="/administration">Administration</Link>
+          </div>
+          <div className="px-4 mb-3 font-sans">
+            <Link to="/settings">Settings</Link>
+          </div>
+          <div className="px-4 mb-3 font-sans">
+            <Link to="/logout">Logout</Link>
+          </div>
         </div>
-        <div className="flex flex-grow">
-          <Submenu header="Channels" prefix="#" subdomain="channel" items={channels} />
-        </div>
-        <Tester />
-        <div className="px-4 mb-3 font-sans">
-          <Link to="/administration">Administration</Link>
-        </div>
-        <div className="px-4 mb-3 font-sans">
-          <Link to="/settings">Settings</Link>
-        </div>
-        <div className="px-4 mb-3 font-sans">
-          <Link to="/logout">Logout</Link>
-        </div>
-      </div>
+      </button>
     </div>
   )
 }
