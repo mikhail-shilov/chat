@@ -12,7 +12,7 @@ const Channel = ({ connectionStatus, channel, info, messages }) => {
   }, [messages])
 
   return (
-    <div className="h-1 flex-shrink flex-grow px-6 py-4 relative overflow-y-scroll ">
+    <div className="border h-1 flex-shrink flex-grow px-6 py-4 relative overflow-y-scroll overflow-x-auto ">
       {!connectionStatus && (
         <div className="flex items-center justify-center absolute top-0 left-1 right-0 bottom-0 bg-gray-50 bg-opacity-70">
           Connecting...

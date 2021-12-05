@@ -67,6 +67,7 @@ export function checkSignIn() {
       .then((r) => r.json())
       .then((data) => {
         if (data.status === 'ok') {
+          console.log('auth:data.user', data.user)
           dispatch(signIn(data.token, data.user))
           // history.push('/chat')
         }

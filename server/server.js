@@ -59,6 +59,7 @@ server.post('/api/v1/auth', async (req, res) => {
     const user = {
       id: userRecord.id,
       login: userRecord.login,
+      roles: userRecord.roles,
       origin: userRecord.origin
     }
     res.json({ status: 'ok', token, user })
@@ -76,6 +77,7 @@ server.get('/api/v1/auth', async (req, res) => {
     const user = {
       id: userRecord.id,
       login: userRecord.login,
+      roles: userRecord.roles,
       origin: userRecord.origin
     }
     const newPayload = { uid: userRecord.id }

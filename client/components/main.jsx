@@ -12,7 +12,7 @@ import Chat from './chat'
 const Main = () => {
   const dispatch = useDispatch()
   const { channel = 'general' } = useParams() // mode = 'channel',
-  const login = useSelector((state) => state.auth.user.login)
+  const { login, roles } = useSelector((state) => state.auth.user)
   const connectionStatus = useSelector((state) => state.auth.isSocketReady)
   const channels = useSelector((state) => state.channel.channels)
   const elChannels = Object.keys(channels)
@@ -45,7 +45,7 @@ const Main = () => {
     <>
       <Head title="chat" />
       <div id="main" className="main w-full h-full flex flex-col md:flex-row text-2xl fixed">
-        <Sidebar channels={elChannels} login={login} connectionStatus={connectionStatus} />
+        <Sidebar channels={elChannels} login={login} roles={roles} connectionStatus={connectionStatus} />
         <div className="content flex flex-grow">
           <Switch>
             <Route exact path="/settings" component={DummyView} />
