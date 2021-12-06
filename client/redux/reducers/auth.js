@@ -6,6 +6,7 @@ const SIGN_IN = 'SIGN_IN'
 const ERROR = 'ERROR'
 const SOCKET_CONNECTED = 'SOCKET_CONNECTED'
 const SOCKET_DISCONNECTED = 'SOCKET_DISCONNECTED'
+const SET_USERS = 'SET_USERS'
 
 const cookies = new Cookies()
 
@@ -14,6 +15,7 @@ const initialState = {
   user: {},
   previousError: null,
   isSocketReady: false,
+  users: ['sdfsdf', 'gtsad']
 }
 
 export default (state = initialState, action) => {
@@ -26,6 +28,9 @@ export default (state = initialState, action) => {
       return { ...state, isSocketReady: false }
     case ERROR:
       return { ...state, previousError: action.errorMessage }
+    case SET_USERS:
+      action.users.sort()
+      return { ...state, users: action.users }
     default:
       return state
   }
@@ -33,6 +38,7 @@ export default (state = initialState, action) => {
 
 export const signIn = (token, user) => ({ type: SIGN_IN, token, user })
 export const setErrorMessage = (errorMessage) => ({ type: ERROR, errorMessage })
+export const setUsers = (users) => ({ type: SET_USERS, users })
 
 export function doSignIn(login, password) {
   return (dispatch) => {

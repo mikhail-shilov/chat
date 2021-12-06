@@ -41,7 +41,10 @@ export default class SocketHandler {
         console.log('SocketByLogin - subscribe(). Login:', login)
         if (login) {
           this.credentialsHandler.add(login, currentConnection.id)
-          console.log('Subscribe - ok')
+          const countOfUsers = this.showLoggedUsers().length
+          if (countOfUsers > 0) {
+            this.broadcast({ wsActivity: 'update_users', users: this.showLoggedUsers() })
+          }
           currentConnection.write(JSON.stringify({ wsActivity: 'response', type, status: 'ok' }))
           this.credentialsHandler.add(login, currentConnection.id)
         } else {
@@ -97,13 +100,9 @@ export default class SocketHandler {
   }
 
   singlecast(message, recipient) {
-    console.log('Singlecast')
     if (this.credentialsHandler.list(recipient)) {
-      console.log('User present')
       this.connections.forEach((connection) => {
-        console.log('all conn')
         if (this.showConnectionsByLogins(recipient).includes(connection.id)) {
-          console.log('not all conn')
           connection.write(JSON.stringify(message))
         }
       })
@@ -142,7 +141,4 @@ export default class SocketHandler {
     }
     return output
   }
-
-
-
 }

@@ -42,7 +42,7 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case RECEIVE_MESSAGE: {
-      console.log('RECEIVE_MESSAGE', state.active, action.channel, state.active !== action.channel)
+      console.log('RECEIVE_MESSAGE')
       return {
         ...state,
         channels: {

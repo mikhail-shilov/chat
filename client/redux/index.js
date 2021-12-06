@@ -8,7 +8,7 @@ import rootReducer from './reducers'
 import createHistory from './history'
 import socketActions from './sockets'
 import { receiveMessage } from './reducers/channels'
-import { logOut } from './reducers/auth'
+import { logOut, setUsers } from "./reducers/auth";
 
 export const history = createHistory()
 
@@ -36,7 +36,7 @@ if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
     socket.onmessage = (message) => {
       // eslint-disable-next-line no-console
       console.log('ws input', JSON.parse(message.data))
-      const { wsActivity, author, message: text, channel } = JSON.parse(message.data)
+      const { wsActivity, author, message: text, channel, users } = JSON.parse(message.data)
       switch (wsActivity) {
         case 'broadcast': {
           store.dispatch(receiveMessage(channel, author, text))
@@ -44,6 +44,10 @@ if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
         }
         case 'system_broadcast': {
           store.dispatch(receiveMessage('system', 'system', text))
+          break
+        }
+        case 'update_users': {
+          store.dispatch(setUsers(users))
           break
         }
         case 'kick': {

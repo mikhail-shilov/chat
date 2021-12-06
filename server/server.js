@@ -173,6 +173,7 @@ if (config.isSocketsEnabled) {
 
   echo.on('connection', (conn) => {
     socketHandler.newConnection(conn)
+
     conn.on('data', async (data) => {
       await socketHandler.listen(conn, data)
     })

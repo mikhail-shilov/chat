@@ -13,6 +13,7 @@ const Main = () => {
   const dispatch = useDispatch()
   const { channel = 'general' } = useParams() // mode = 'channel',
   const { login, roles } = useSelector((state) => state.auth.user)
+  const users = useSelector((state) => state.auth.users)
   const connectionStatus = useSelector((state) => state.auth.isSocketReady)
   const channels = useSelector((state) => state.channel.channels)
   const elChannels = Object.keys(channels)
@@ -40,6 +41,7 @@ const Main = () => {
   useEffect(() => {
     dispatch(setActiveChannel(channel))
   }, [channel])
+  const listOfUsers = users.map((userName, index) => <p key={index}>{userName}</p>)
 
   return (
     <>
@@ -54,6 +56,10 @@ const Main = () => {
               <Chat channel={channel} connectionStatus={connectionStatus} />
             </Route>
           </Switch>
+        </div>
+        <div className="absolute md:relative md:flex w-full p-5 md:w-min pt-16 md:pt-5 flex-col userList  border bg-purple-300 ">
+          <h2>Online:</h2>
+          {listOfUsers}
         </div>
       </div>
     </>
