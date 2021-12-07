@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, Link, Switch, Route } from 'react-router-dom'
 
@@ -8,6 +8,7 @@ import { setActiveChannel } from '../redux/reducers/channels'
 import Admin from './admin'
 import DummyView from './dummy-view'
 import Chat from './chat'
+import ConnectedUsers from './ui/connectedUsers'
 
 const Main = () => {
   const dispatch = useDispatch()
@@ -41,13 +42,21 @@ const Main = () => {
   useEffect(() => {
     dispatch(setActiveChannel(channel))
   }, [channel])
-  const listOfUsers = users.map((userName, index) => <p key={index}>{userName}</p>)
+
+  const [isShowListOfUsers, setShowListOfUsers] = useState(false)
 
   return (
     <>
       <Head title="chat" />
       <div id="main" className="main w-full h-full flex flex-col md:flex-row text-2xl fixed">
-        <Sidebar channels={elChannels} login={login} roles={roles} connectionStatus={connectionStatus} />
+        <Sidebar
+          channels={elChannels}
+          login={login}
+          roles={roles}
+          connectionStatus={connectionStatus}
+          isShowListOfUsers={isShowListOfUsers}
+          setShowListOfUsers={setShowListOfUsers}
+        />
         <div className="content flex flex-grow">
           <Switch>
             <Route exact path="/settings" component={DummyView} />
@@ -57,9 +66,8 @@ const Main = () => {
             </Route>
           </Switch>
         </div>
-        <div className="absolute md:relative md:flex w-full p-5 md:w-min pt-16 md:pt-5 flex-col userList  border bg-purple-300 ">
-          <h2>Online:</h2>
-          {listOfUsers}
+        <div className={`${isShowListOfUsers ? 'flex' : 'hidden'} md:flex absolute md:relative w-full p-5 md:w-min pt-16 md:pt-5 flex-col userList text-purple-100  border bg-purple-500 `}>
+          <ConnectedUsers users={users} connectionStatus={connectionStatus}/>
         </div>
       </div>
     </>
