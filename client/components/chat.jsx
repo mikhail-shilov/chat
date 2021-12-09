@@ -14,7 +14,12 @@ const Chat = ({ channel, connectionStatus }) => {
 
   return (
     <div className="flex-grow flex flex-col">
-      <Channel messages={messages} channel={channel} info={info} connectionStatus={connectionStatus} />
+      <Channel
+        messages={messages}
+        channel={channel}
+        info={info}
+        connectionStatus={connectionStatus}
+      />
       <Editor channel={channel} connectionStatus={connectionStatus} handler={sendMessageHandler} />
     </div>
   )

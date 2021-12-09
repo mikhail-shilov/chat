@@ -36,6 +36,46 @@ const initialState = {
         { author: 'user1', message: 'No!' }
       ]
     }
+  },
+
+  channelsInfo: [
+    {
+      id: 1,
+      name: 'general',
+      info: 'Main channel for general discussion',
+      prefix: '#',
+      unread: false
+    },
+    {
+      id: 2,
+      name: 'cats',
+      info: "Cat's speak",
+      prefix: '#',
+      unread: false
+    },
+    {
+      id: 3,
+      name: 'system',
+      info: 'Новости о работе сервера',
+      prefix: '&',
+      unread: false
+    }
+  ],
+  messageStorage: {
+    general: [
+      { author: 'user1', message: 'lorem ipsum' },
+      { author: 'user2', message: 'О чем сегодня поговорим?' },
+      { author: 'user2', message: 'Может о пончиках?' },
+      { author: 'user1', message: 'Оладушки лучше!' }
+    ],
+    cats: [
+      { author: 'user2', message: 'Cats are good' },
+      { author: 'user1', message: 'Yes!' }
+    ],
+    system: [
+      { author: 'user2', message: 'Is it work?' },
+      { author: 'user1', message: 'No!' }
+    ]
   }
 }
 

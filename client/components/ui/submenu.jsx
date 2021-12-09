@@ -1,13 +1,11 @@
 import React from 'react'
 
 const Submenu = ({ header, items }) => {
-  const elements = items.map((item) => (
-    <>
+  const elements = items.map((item, index) => (
+    <p key={index}>
       {item}
-      <br />
-    </>
+    </p>
   ))
-
 
   return (
     <div className="flex flex-col w-full">

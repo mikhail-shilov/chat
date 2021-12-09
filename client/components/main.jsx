@@ -13,13 +13,16 @@ import AppHeader from './ui/appHeader'
 
 const Main = () => {
   const dispatch = useDispatch()
-  const { appName, isShowMenu, isShowUsers } = useSelector((state) => state.ui)
-
   const { channel = 'general' } = useParams() // mode = 'channel',
-  const { login, roles } = useSelector((state) => state.auth.user)
-  const users = useSelector((state) => state.auth.users)
+  useEffect(() => {
+    dispatch(setActiveChannel(channel))
+  }, [channel])
+
   const connectionStatus = useSelector((state) => state.auth.isSocketReady)
+  const { appName, isShowMenu, isShowUsers } = useSelector((state) => state.ui)
+  const { login, roles } = useSelector((state) => state.auth.user)
   const channels = useSelector((state) => state.channel.channels)
+
   const elChannels = Object.keys(channels)
     .reduce(
       (acc, keyName) => [
@@ -41,10 +44,6 @@ const Main = () => {
         </span>
       </Link>
     ))
-
-  useEffect(() => {
-    dispatch(setActiveChannel(channel))
-  }, [channel])
 
   return (
     <>
@@ -82,7 +81,7 @@ const Main = () => {
           p-5 pt-16 md:pt-5 flex-col  
           text-purple-100  border bg-purple-500 `}
         >
-          <ConnectedUsers users={users} connectionStatus={connectionStatus} />
+          <ConnectedUsers connectionStatus={connectionStatus} />
         </div>
       </div>
     </>

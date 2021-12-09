@@ -1,6 +1,9 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-const ConnectedUsers = ({ users = [], connectionStatus }) => {
+const ConnectedUsers = ({ connectionStatus }) => {
+  const users = useSelector((state) => state.auth.users)
+
   const placeHolder = () => <p>Connecting...</p>
   const listOfUsers = users.map((userName, index) => <p key={index}>{userName}</p>)
 
