@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, Link, Switch, Route } from 'react-router-dom'
 
 import Head from './head'
-import Sidebar from './ui/sidebar'
 import { setActiveChannel } from '../redux/reducers/channels'
 import Admin from './admin'
 import DummyView from './dummy-view'
 import Chat from './chat'
 import ConnectedUsers from './ui/connectedUsers'
+import SideMenu from './ui/sidemenu'
+import AppHeader from './ui/appHeader'
 
 const Main = () => {
   const dispatch = useDispatch()
+  const { appName, isShowMenu, isShowUsers } = useSelector((state) => state.ui)
+
   const { channel = 'general' } = useParams() // mode = 'channel',
   const { login, roles } = useSelector((state) => state.auth.user)
   const users = useSelector((state) => state.auth.users)
@@ -43,21 +46,27 @@ const Main = () => {
     dispatch(setActiveChannel(channel))
   }, [channel])
 
-  const [isShowListOfUsers, setShowListOfUsers] = useState(false)
-
   return (
     <>
       <Head title="chat" />
-      <div id="main" className="main w-full h-full flex flex-col md:flex-row text-2xl fixed">
-        <Sidebar
-          channels={elChannels}
-          login={login}
-          roles={roles}
-          connectionStatus={connectionStatus}
-          isShowListOfUsers={isShowListOfUsers}
-          setShowListOfUsers={setShowListOfUsers}
-        />
-        <div className="content flex flex-grow">
+      <div id="main" className="main fixed w-full h-full flex flex-col md:flex-row text-2xl">
+        <div className="1col flex flex-col flex-shrink-0 w-full z-50 md:max-h-screen md:w-56 md:overflow-y-auto bg-purple-800 text-purple-300">
+          <div className="appHeader flex ">
+            <AppHeader appName={appName} isShowUsers={isShowUsers} isShowMenu={isShowMenu} />
+          </div>
+          <div
+            className={`sideMenu ${isShowMenu ? 'flex' : 'hidden'}
+            flex-grow md:flex flex-col`}
+          >
+            <SideMenu
+              login={login}
+              channels={elChannels}
+              connectionStatus={connectionStatus}
+              roles={roles}
+            />
+          </div>
+        </div>
+        <div className="2col flex flex-grow">
           <Switch>
             <Route exact path="/settings" component={DummyView} />
             <Route exact path="/administration" component={Admin} />
@@ -66,8 +75,14 @@ const Main = () => {
             </Route>
           </Switch>
         </div>
-        <div className={`${isShowListOfUsers ? 'flex' : 'hidden'} md:flex absolute md:relative w-full p-5 md:w-min pt-16 md:pt-5 flex-col userList text-purple-100  border bg-purple-500 `}>
-          <ConnectedUsers users={users} connectionStatus={connectionStatus}/>
+        <div
+          className={`3col
+         ${isShowUsers ? 'flex' : 'hidden'}
+          md:flex absolute md:relative w-full md:w-min
+          p-5 pt-16 md:pt-5 flex-col  
+          text-purple-100  border bg-purple-500 `}
+        >
+          <ConnectedUsers users={users} connectionStatus={connectionStatus} />
         </div>
       </div>
     </>

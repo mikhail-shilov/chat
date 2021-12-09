@@ -5,11 +5,13 @@ import reg from './reg'
 import channel from './channels'
 import direct from './direct'
 import admin from './admin'
+import ui from './ui'
 
 const createRootReducer = (history) =>
   combineReducers({
     router: connectRouter(history),
     auth,
+    ui,
     reg,
     channel,
     direct,
